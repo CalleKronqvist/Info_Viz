@@ -2,27 +2,29 @@ function createBarchart(data, containerId) {
     // Data pre-processing: Group by MAKE and calculate average EMISSIONS (CO2)
     const avgCO2ByMake = d3.rollup(
       data,
-      (v) => d3.mean(v, d => d.EMISSIONS), // Calculate average EMISSIONS for each MAKE
+      (v) => d3.mean(v, d => d['EMISSIONS']), // Calculate average EMISSIONS for each MAKE
       (d) => d.MAKE // Group by MAKE
     );
   
     // Convert the Map to an array and sort by the highest average EMISSIONS
-    const sortedData = Array.from(avgCO2ByMake, ([make, avgCO2]) => ({
+    let sortedData = Array.from(avgCO2ByMake, ([make, avgCO2]) => ({
       make,
       avgCO2
     })).sort((a, b) => b.avgCO2 - a.avgCO2); // Sort descending by avgCO2
-  
+    
+    // Pick top 10
+    sortedData = sortedData.slice(0, 10);
     console.log(sortedData); // Check the processed data
   
     // Core Bar Chart setup
-    const width = window.innerWidth * 0.7;
+    const width = window.innerWidth * 0.5;
     const height = 600;
   
     const margin = {
       top: 20,
       right: 60,
       bottom: 70,
-      left: 150,  // Increase to fit long MAKE names
+      left: 100,  // Increase to fit long MAKE names
     };
   
     // Create the SVG container
@@ -93,6 +95,6 @@ function createBarchart(data, containerId) {
       .attr("text-anchor", "middle")
       .style("font-size", "16px")
       .style("font-weight", "bold")
-      .text("Average CO2 Emissions by Model (Proxy for Fuel Consumption)");
+      .text("Average CO2 Emissions");
   }
   
