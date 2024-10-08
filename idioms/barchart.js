@@ -23,7 +23,6 @@ function createBarchart(data, containerId) {
     .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
     .slice(0, 40);
 
-
   console.log(sortedData); // Check the processed data
 
   // Core Bar Chart setup
@@ -54,7 +53,7 @@ function createBarchart(data, containerId) {
   // Set up the xScale for EMISSIONS (CO2)
   const xScale = d3
     .scaleLinear()
-    .domain([0, d3.max(sortedData, (d) => d.emissions)]) // Domain from 0 to max CO2
+    .domain([0, d3.max(sortedData, (d) => d.emissions)+250]) // Domain from 0 to max CO2
     .range([margin.left, width - margin.right]);
 
   // Create and append the bars
@@ -106,4 +105,25 @@ function createBarchart(data, containerId) {
     .style("font-size", "16px")
     .style("font-weight", "bold")
     .text("Top Models by CO2 Emissions");
+
+  // Create the legend
+  const legend = svg.append("g")
+    .attr("transform", `translate(${width - margin.right - 150}, ${margin.top})`); // Move legend to the right
+
+  vehicleClasses.forEach((vehicleClass, index) => {
+    // Create a colored rectangle for each class
+    legend.append("rect")
+      .attr("x", 0)
+      .attr("y", index * 20)  // Adjust spacing between legend items
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", colorScale(vehicleClass));
+
+    // Create a label for each class
+    legend.append("text")
+      .attr("x", 25)
+      .attr("y", index * 20 + 15)  // Align text with rectangles
+      .text(vehicleClass)
+      .style("font-size", "12px");
+  });
 }
