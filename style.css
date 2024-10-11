@@ -1,3 +1,22 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -7,6 +26,32 @@
         "BarChart ScatterPlot"
         "LineChart LineChart";
 }
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 90%;
+    max-width: 800px;
+    justify-content: center;
+}
+
+.flex-item {
+    background-color: #3498db;
+    color: white;
+    flex: 1 1 45%;
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 1.2em;
+    min-width: 200px;
+}
+
+
+/****************************************************
+ *  Define the grid areas for the different charts  *
+ ****************************************************/
 
 .BarChart {
     grid-area: BarChart;
@@ -20,12 +65,15 @@
     grid-area: ScatterPlot;
 }
 
-html,
-body {
-    height: 100%;
-    margin: 0;
-    font-family: Arial, sans-serif;
+.Widget {
+    grid-area: Widget;
 }
+
+
+/****************************************************
+ *  Define the styles for the buttons and the flex  *
+ *  container that holds the buttons                *
+ ****************************************************/
 
 .button-container {
     display: flex;
@@ -42,4 +90,11 @@ body {
 
 button {
     font-size: 20px;
+}
+
+/* Media query to stack the items on smaller screens */
+@media (max-width: 600px) {
+    .flex-item {
+        flex: 1 1 100%;
+    }
 }
