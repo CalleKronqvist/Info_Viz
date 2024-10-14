@@ -1,4 +1,7 @@
 function createBarchart(data, containerId) {
+
+  /* Pre-process*/
+
   // Define the color palette
   const colorPalette = [
     "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", 
@@ -18,30 +21,30 @@ function createBarchart(data, containerId) {
     .map(d => ({
       model: d.MODEL,               // Use MODEL for y-axis
       emissions: d['EMISSIONS'],    // Use EMISSIONS for x-axis
-      vehicleClass: d['VEHICLE CLASS']  // Get vehicle class for color mapping
+      vehicleClass: d['VEHICLE CLASS'],  // Get vehicle class for color mapping
+      brand: d['MAKE']              // brand for on-click event
     }))
     .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
-    .slice(0, 40);
-
+    .slice(0, 30);
   console.log(sortedData); // Check the processed data
 
-  // Core Bar Chart setup
+  /* Dimensions */
   const width = window.innerWidth * 0.5;
-  const height = 600;
+  const height = 400;
 
   const margin = {
-    top: 20,
+    top: 30,
     right: 60,
-    bottom: 70,
-    left: 180,  // Increase to fit long MODEL names
+    bottom: 60,
+    left: 200,  // Increase to fit long model names
   };
 
-  // Create the SVG container
-  const svg = d3
-    .select(containerId)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
+  /* Scales */
+  // Set up the xScale for EMISSIONS (CO2)
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(sortedData, (d) => d.emissions)]) // Domain from 0 to max CO2
+    .range([margin.left, width - margin.right]);
 
   // Set up the yScale for MODEL (categorical)
   const yScale = d3
@@ -50,11 +53,12 @@ function createBarchart(data, containerId) {
     .range([margin.top, height - margin.bottom])
     .padding(0.3); // Add padding between bars
 
-  // Set up the xScale for EMISSIONS (CO2)
-  const xScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(sortedData, (d) => d.emissions)+250]) // Domain from 0 to max CO2
-    .range([margin.left, width - margin.right]);
+  /* SVG container */
+  const svg = d3
+    .select(containerId)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
   // Create and append the bars
   svg
@@ -76,54 +80,56 @@ function createBarchart(data, containerId) {
       d3.select(this).style("stroke-width", "1px");
     })
     .on("click", function (event, d) {
-      swal.fire("CO2 emissions: " + d.emissions.toFixed(2)); // Show emissions on click
+      swal.fire({title: d.brand +" " + d.model,
+                html: "CO2 emissions: " + d.emissions.toFixed(2) + " g/km <br />" + "Class: " + d.vehicleClass
+      }
+    ); // Show emissions on click
     });
 
-  // Create and add x-axis (EMISSIONS)
+  /* Axes */
+  // X-axis
   svg
     .append("g")
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(xScale).tickSizeOuter(0))
+    .call
+      (
+        d3.axisBottom(xScale)
+    .tickSizeOuter(0)
+  );
+  // X-label
+  svg
     .append("text")
     .attr("x", width / 2)
-    .attr("y", 100)
+    .attr("y", height - margin.bottom/3)
     .attr("text-anchor", "middle")
     .text("CO2 Emissions (g/km)");
 
-  // Create and add y-axis (MODEL)
+  // Y-Axis
   svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(yScale).tickSizeOuter(0));
+    .call(
+      d3
+        .axisLeft(yScale).tickSizeOuter(0)
+  );
 
-  // Optionally, you can add a chart title
+  // Y-label
+  // Swap x/y and set x to negative for rotate to work
+  svg
+    .append("text")
+    .attr("x", -height/2)
+    .attr("y", margin.left/8)
+    .attr("text-anchor", "middle")
+    .attr("transform", `rotate(-90)`)
+    .text("Model");
+
+  // Title
   svg
     .append("text")
     .attr("x", width / 2)
-    .attr("y", margin.top)
+    .attr("y", margin.top/2)
     .attr("text-anchor", "middle")
     .style("font-size", "16px")
     .style("font-weight", "bold")
     .text("Top Models by CO2 Emissions");
-
-  // Create the legend
-  const legend = svg.append("g")
-    .attr("transform", `translate(${width - margin.right - 150}, ${margin.top})`); // Move legend to the right
-
-  vehicleClasses.forEach((vehicleClass, index) => {
-    // Create a colored rectangle for each class
-    legend.append("rect")
-      .attr("x", 0)
-      .attr("y", index * 20)  // Adjust spacing between legend items
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", colorScale(vehicleClass));
-
-    // Create a label for each class
-    legend.append("text")
-      .attr("x", 25)
-      .attr("y", index * 20 + 15)  // Align text with rectangles
-      .text(vehicleClass)
-      .style("font-size", "12px");
-  });
 }

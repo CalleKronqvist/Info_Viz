@@ -20,11 +20,20 @@ body {
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 0.1fr 0.9fr 0.9fr 0.11fr;
     gap: 0px 0px;
     grid-template-areas:
-        "BarChart ScatterPlot"
-        "LineChart LineChart";
+        "Title Title"
+        "BarChart LineChart"
+        "ScatterPlot ScatterPlot"
+        "Legend Legend";
+    margin-top: 160px
+}
+
+.Title {
+    margin-top: 30px;
+    text-align: center;
+    width: 200%;
 }
 
 .flex-container {
@@ -34,6 +43,7 @@ body {
     width: 90%;
     max-width: 800px;
     justify-content: center;
+    margin-top: 100px;
 }
 
 .flex-item {
@@ -68,6 +78,9 @@ body {
 .Widget {
     grid-area: Widget;
 }
+.Legend {
+    grid-area: Legend;
+}
 
 
 /****************************************************
@@ -90,6 +103,31 @@ body {
 
 button {
     font-size: 20px;
+}
+.axisGreen line {
+    stroke: green;  /* Changes tick lines to green */
+}
+
+.axisGreen path {
+    stroke: green;  /* Changes the axis path to green */
+}
+
+.axisGreen text {
+    fill: green;    /* Changes the tick labels to green */
+    stroke: none;   /* Ensure text doesn’t get outlined */
+}
+
+.axisBlue line {
+    stroke: steelblue;  /* Changes tick lines to green */
+}
+
+.axisBlue path {
+    stroke: steelblue;  /* Changes the axis path to green */
+}
+
+.axisBlue text {
+    fill: steelblue;    /* Changes the tick labels to green */
+    stroke: none;   /* Ensure text doesn’t get outlined */
 }
 
 /* Media query to stack the items on smaller screens */
