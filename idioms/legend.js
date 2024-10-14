@@ -31,13 +31,15 @@ function createLegend(data,containerId){
     // Create the legend
     const legend = svg.append("g")
         .attr("transform", `translate(${margin.right}, ${-margin.top})`); // Move legend to the right
+    const selectedClasses = new Set();
 
     // Create a colored rectangle for each class
     vehicleClasses.forEach((vehicleClass, index) => {
         const legendItem = legend.append("g")
             .attr("class", "legend-item")
             .attr("transform", `translate(${index * 146}, 0)`)
-            .style("cursor", "pointer"); // Make the item look clickable
+            .style("cursor", "pointer") // Make the item look clickable
+            .datum(vehicleClass);
 
         // Add rectangle
         legendItem.append("rect")
@@ -65,13 +67,39 @@ function createLegend(data,containerId){
                 .style("font-weight", "bold");
         });
         legendItem.on("mouseleave", function () {
-            d3.select(this).select("rect")
-                .style("stroke", "none");
+            if (!selectedClasses.has(d3.select(this).datum())){
                 d3.select(this).select("rect")
-                    .style("stroke", "none");  // Remove border
-
+                .style("stroke", "none");
+                
                 d3.select(this).select("text")
                     .style("font-weight", "normal");  // Reset text weight
+            }
+            
+            });
+
+
+            // Modify the click event
+            legendItem.on("click", function (event, d) {
+                if (selectedClasses.has(d)) {
+                    // Deselect: remove from set, reset styles
+                    selectedClasses.delete(d);
+                    d3.select(this).select("rect")
+                        .style("stroke", "none");
+            
+                    d3.select(this).select("text")
+                        .style("font-weight", "normal");
+                } else {
+                    // Select: add to set, apply styles
+                    selectedClasses.add(d);
+                    d3.select(this).select("rect")
+                        .style("stroke", "black")
+                        .style("stroke-width", "2px");
+            
+                    d3.select(this).select("text")
+                        .style("font-weight", "bold");
+                }
+            
+                console.log("Selected vehicle classes:", Array.from(selectedClasses));
             });
 
     })}
