@@ -44,6 +44,16 @@ function createLineChart(data) {
     .attr("width", width)
     .attr("height", height);
 
+    const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "#fff")
+        .style("border", "1px solid #ccc")
+        .style("padding", "5px")
+        .style("border-radius", "5px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
     // generate lines
     const emissionLine = d3.line()
     .x(d => xScale(d.year))
@@ -60,6 +70,29 @@ function createLineChart(data) {
         .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
         .attr("d", emissionLine);
+    svg
+        .selectAll("circleEmissions")
+        .data(formattedData)
+        .enter()
+        .append("circle")
+        .attr("class", "dataItem")
+        .attr("r", 5)
+        .attr("cx", (d) => xScale(d.year))
+        .attr("cy", (d) => yScaleLeft(d.avgEmissions))
+        .style("fill", "steelblue")
+        .on("mouseover", function (event, d) {
+            d3.select(this).attr("r", 7);  // Enlarge point on hover
+            tooltip
+                .style("opacity", 1)
+                .html(`Year: ${d.year}<br>Avg Emissions: ${d.avgEmissions.toFixed(2)} g/km`)
+                .style("left", `${event.pageX + 10}px`)
+                .style("top", `${event.pageY - 25}px`);
+        })
+        .on("mouseleave", function () {
+            d3.select(this).attr("r", 5);  // Reset point size
+            tooltip.style("opacity", 0);  // Hide tooltip
+        });
+    
     
     // Add cost path (right)
     svg.append("path")
@@ -68,6 +101,29 @@ function createLineChart(data) {
         .attr("stroke", "green")
         .attr("stroke-width", 1.5)
         .attr("d", costLine);
+    svg
+        .selectAll("circleCost")
+        .data(formattedData)
+        .enter()
+        .append("circle")
+        .attr("class", "dataItem")
+        .attr("r", 5)
+        .attr("cx", (d) => xScale(d.year))
+        .attr("cy", (d) => yScaleRight(d.totalCost))
+        .style("fill", "green")
+        .on("mouseover", function (event, d) {
+            d3.select(this).attr("r", 7);  // Enlarge point on hover
+            tooltip
+                .style("opacity", 1)
+                .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$`)
+                .style("left", `${event.pageX + 10}px`)
+                .style("top", `${event.pageY - 25}px`);
+        })
+        .on("mouseleave", function () {
+            d3.select(this).attr("r", 5);  // Reset point size
+            tooltip.style("opacity", 0);  // Hide tooltip
+        });
+    
 
     /* Axes */
     // Add X axis
@@ -85,7 +141,6 @@ function createLineChart(data) {
     svg.append("g")
         .attr("transform", `translate(${margin.left},0)`)
         .attr("class", "axisBlue")
-        // .style("stroke", "steelblue")
         .call(d3.axisLeft(yScaleLeft));
     svg
         .append("text")
@@ -94,7 +149,7 @@ function createLineChart(data) {
         .attr("text-anchor", "middle")
         .attr("transform", `rotate(-90)`)
         .style("fill", "steelblue")
-        .text("CO2 Emissions"); 
+        .text("CO2 Emissions (g/km)"); 
     
     // Right Y axis
                
@@ -111,7 +166,7 @@ function createLineChart(data) {
         .attr("text-anchor", "middle")
         .attr("transform", `rotate(90)`)
         .style("fill", "green")
-        .text("Cost [Dollars per 100km]"); 
+        .text("Cost (Dollars per 100km)"); 
 
     // Title
     svg
