@@ -4,13 +4,11 @@
     padding: 0;
 }
 
-
 html,
 body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
-    display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -19,22 +17,26 @@ body {
 
 .container {
     display: grid;
+    justify-content: center;
+    align-items: center;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 0.1fr 0.9fr 0.9fr 0.11fr;
-    gap: 0px 0px;
+    /* grid-template-rows: 0.9fr 0.9fr 0.9fr 0.9fr; */
+    gap: 50px 50px;
     grid-template-areas:
-        "Title Title"
-        "BarChart LineChart"
-        "ScatterPlot ScatterPlot"
-        "Legend Legend";
-    margin-top: 160px
+        "BarChart Filter"
+        "LineChart ScatterPlot";
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 100px
 }
 
-.Title {
-    margin-top: 30px;
+header {
+    width: 100%;
+    /* color: #fff; */
+    padding: 1rem;
     text-align: center;
-    width: 200%;
 }
+
 
 .flex-container {
     display: flex;
@@ -75,9 +77,10 @@ body {
     grid-area: ScatterPlot;
 }
 
-.Widget {
-    grid-area: Widget;
+.Filter {
+    grid-area: Filter;
 }
+
 .Legend {
     grid-area: Legend;
 }
@@ -104,30 +107,43 @@ body {
 button {
     font-size: 20px;
 }
+
+/****************************************************
+ *  Define the styles for the legend                *
+ ****************************************************/
+
 .axisGreen line {
-    stroke: green;  /* Changes tick lines to green */
+    stroke: green;
+    /* Changes tick lines to green */
 }
 
 .axisGreen path {
-    stroke: green;  /* Changes the axis path to green */
+    stroke: green;
+    /* Changes the axis path to green */
 }
 
 .axisGreen text {
-    fill: green;    /* Changes the tick labels to green */
-    stroke: none;   /* Ensure text doesn’t get outlined */
+    fill: green;
+    /* Changes the tick labels to green */
+    stroke: none;
+    /* Ensure text doesn’t get outlined */
 }
 
 .axisBlue line {
-    stroke: steelblue;  /* Changes tick lines to green */
+    stroke: steelblue;
+    /* Changes tick lines to green */
 }
 
 .axisBlue path {
-    stroke: steelblue;  /* Changes the axis path to green */
+    stroke: steelblue;
+    /* Changes the axis path to green */
 }
 
 .axisBlue text {
-    fill: steelblue;    /* Changes the tick labels to green */
-    stroke: none;   /* Ensure text doesn’t get outlined */
+    fill: steelblue;
+    /* Changes the tick labels to green */
+    stroke: none;
+    /* Ensure text doesn’t get outlined */
 }
 
 /* Media query to stack the items on smaller screens */
