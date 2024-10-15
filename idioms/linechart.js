@@ -66,6 +66,7 @@ function createLineChart(data) {
     // Add the emission path (left)
     svg.append("path")
         .datum(formattedData)
+        .attr("class", "lineEmissions")
         .attr("fill", "none")
         .attr("stroke", "steelblue")
         .attr("stroke-width", 1.5)
@@ -97,6 +98,7 @@ function createLineChart(data) {
     // Add cost path (right)
     svg.append("path")
         .datum(formattedData)
+        .attr("class", "lineCost")
         .attr("fill", "none")
         .attr("stroke", "green")
         .attr("stroke-width", 1.5)
@@ -106,7 +108,7 @@ function createLineChart(data) {
         .data(formattedData)
         .enter()
         .append("circle")
-        .attr("class", "dataItem")
+        .attr("class", "dataItemCost")
         .attr("r", 5)
         .attr("cx", (d) => xScale(d.year))
         .attr("cy", (d) => yScaleRight(d.totalCost))
@@ -128,6 +130,7 @@ function createLineChart(data) {
     /* Axes */
     // Add X axis
     svg.append("g")
+        .attr("class", "xAxis")
         .attr("transform", `translate(0,${height- margin.bottom})`)
         .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));  // Format years as integers
     svg
@@ -139,6 +142,7 @@ function createLineChart(data) {
         
     // Left Y axis
     svg.append("g")
+        .attr("class", "yAxisLeft")
         .attr("transform", `translate(${margin.left},0)`)
         .attr("class", "axisBlue")
         .call(d3.axisLeft(yScaleLeft));
@@ -153,7 +157,7 @@ function createLineChart(data) {
     
     // Right Y axis
                
-    svg.append("g")					
+    svg.append("g")	
         .attr("transform", `translate(${width-margin.right},0)`)	
         .attr("class", "axisGreen")
         // .style("stroke", "green")		
@@ -179,4 +183,110 @@ function createLineChart(data) {
         .text("CO2 Emissions and Cost for Gasoline Vehicles");
 
     
+}
+function updateLineChart(data) {
+    /* Pre-process*/
+    let filteredData = data.filter(d => d['FUEL'] === 'X');
+    console.log(filteredData);
+
+    let groupedData = d3.group(filteredData, d => d.YEAR);
+
+    let formattedData = Array.from(groupedData, ([year, values]) => ({
+    year: +year,
+    avgEmissions: d3.mean(values, d => d.EMISSIONS),  // Calculate average emissions
+    totalCost: d3.mean(values, d => d['FUEL CONSUMPTION'] * d['FUEL COST'] / 100)  // Average total cost
+    }));
+
+    console.log(formattedData);  // Inspect the output
+    
+    /* Dimensions */
+    // SVG dimensions and margins
+    const margin = { 
+        top: 30, 
+        right: 60, 
+        bottom: 60, 
+        left: 60 
+    };
+    const width = window.innerWidth/2;
+    const height = 400;
+
+     /* Scales */
+     const xScale = d3.scaleLinear()
+     .domain(d3.extent(formattedData, d => d.year))
+     .range([margin.left, width-margin.right]);
+ 
+     const yScaleLeft = d3.scaleLinear()
+     .domain([0, d3.max(formattedData, d => d.avgEmissions)])
+     .range([height-margin.bottom,margin.top]);
+ 
+     const yScaleRight = d3.scaleLinear()
+         .domain([0, d3.max(formattedData, d=> d.totalCost)])
+         .range([height-margin.bottom,margin.top]);
+
+    const svg = d3.select(".LineChart svg");
+
+    const emissionLine = d3.line()
+    .x(d => xScale(d.year))
+    .y(d => yScaleLeft(d.avgEmissions));
+    const costLine = d3.line()
+    .x(d => xScale(d.year))
+    .y(d => yScaleRight(d.totalCost)); 
+    
+
+    svg.select(".lineEmissions")
+        .datum(formattedData)
+        .transition()
+        .duration(1000)
+        .attr("d", emissionLine);
+
+    // Data join for emission points
+    const emissionPoints = svg.selectAll(".dataItem")
+        .data(formattedData, d => d.year);  // Use year as a key to track data
+
+    emissionPoints.exit().remove();  // Remove old points
+
+    emissionPoints.enter()
+        .append("circle")
+        .attr("class", "dataItem")
+        .attr("r", 5)
+        .attr("fill", "steelblue")
+        .merge(emissionPoints)  // Merge new and existing points
+        .transition()
+        .duration(1000)
+        .attr("cx", d => xScale(d.year))
+        .attr("cy", d => yScaleLeft(d.avgEmissions));
+
+    // Update the cost line
+    svg.select(".lineCost")
+        .datum(formattedData)
+        .transition()
+        .duration(1000)
+        .attr("d", costLine);
+
+    // Data join for cost points
+    const costPoints = svg.selectAll(".dataItemCost")
+        .data(formattedData, d => d.year);
+
+    costPoints.exit().remove();  // Remove old points
+
+    costPoints.enter()
+        .append("circle")
+        .attr("class", "dataItemCost")
+        .attr("r", 5)
+        .attr("fill", "green")
+        .merge(costPoints)  // Merge new and existing points
+        .transition()
+        .duration(1000)
+        .attr("cx", d => xScale(d.year))
+        .attr("cy", d => yScaleRight(d.totalCost));
+
+
+
+
+
+    
+
+
+
+
 }

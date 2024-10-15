@@ -31,7 +31,7 @@ function createLegend(data,containerId){
     // Create the legend
     const legend = svg.append("g")
         .attr("transform", `translate(${margin.right}, ${-margin.top})`); // Move legend to the right
-    const selectedClasses = new Set();
+    // const selectedClasses = new Set();
 
     // Create a colored rectangle for each class
     vehicleClasses.forEach((vehicleClass, index) => {
@@ -98,6 +98,7 @@ function createLegend(data,containerId){
                     d3.select(this).select("text")
                         .style("font-weight", "bold");
                 }
+                updateVisualizations()
             
                 console.log("Selected vehicle classes:", Array.from(selectedClasses));
             });
