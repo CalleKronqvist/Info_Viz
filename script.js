@@ -10,9 +10,9 @@ function init() {
         // updateVisualizations()
     });
 }
-function updateVisualizations(){
+function updateVisualizations() {
     const filteredData = getFilteredData();
-    // createBarchart(filteredData, ".BarChart");
+    updateBarchart(filteredData);
     updateLineChart(filteredData);
     // createLegend(filteredData, ".Legend")
 }

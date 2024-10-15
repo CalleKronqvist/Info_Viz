@@ -1,0 +1,14 @@
+{
+    "SUV": "#e6194B",
+    "MID-SIZE": "#3cb44b",
+    "COMPACT": "#ffe119",
+    "SUBCOMPACT": "#4363d8",
+    "PICKUP TRUCK": "#f58231",
+    "FULL-SIZE": "#911eb4",
+    "TWO-SEATER": "#42d4f4",
+    "STATION WAGON": "#f032e6",
+    "MINICOMPACT": "#bfef45",
+    "VAN": "#fabed4",
+    "MINIVAN": "#469990",
+    "SPECIAL PURPOSE VEHICLE": "#dcbeff"
+}
