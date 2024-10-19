@@ -75,18 +75,29 @@ async function createBarchart(data, containerId) {
       .attr("fill", (d) => colorPalette[d.vehicleClass])      // Color based on VEHICLE CLASS
       .style("stroke", "black")
       .on("mouseover", function (event, d) {
-        d3.select(this).style("cursor", "pointer").style("stroke-width", "3px");
+        tooltip.transition()
+          .duration(200)
+          .style("opacity", .9);
+        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}`)
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY - 28) + "px");
       })
-      .on("mouseleave", function (event, d) {
-        d3.select(this).style("stroke-width", "1px");
-      })
-      .on("click", function (event, d) {
-        swal.fire({
-          title: d.brand + " " + d.model,
-          html: "CO2 emissions: " + d.emissions.toFixed(2) + " g/km <br />" + "Class: " + d.vehicleClass
-        }
-        ); // Show emissions on click
+      .on("mouseout", function (d) {
+        tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
       });
+
+    // Add tooltip div
+    const tooltip = d3.select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("background", "#fff")
+      .style("border", "1px solid #ccc")
+      .style("padding", "5px")
+      .style("border-radius", "5px")
+      .style("pointer-events", "none")
+      .style("opacity", 0);
 
     /* Axes */
     // X-axis
@@ -201,24 +212,31 @@ async function updateBarchart(data) {
       .style("fill", (d) => colorPalette[d.vehicleClass])        // Color based on VEHICLE CLASS
       .style("stroke", "black")
 
-    svg
-      .selectAll(".bar")
-      .attr("whatever", (d) => {
-        console.log(d);
-      })
+    svg.selectAll(".bar")
       .on("mouseover", function (event, d) {
-        d3.select(this).style("cursor", "pointer").style("stroke-width", "3px");
+        tooltip.transition()
+          .duration(200)
+          .style("opacity", .9);
+        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}`)
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY - 28) + "px");
       })
-      .on("mouseleave", function (event, d) {
-        d3.select(this).style("stroke-width", "1px");
-      })
-      .on("click", function (event, d) {
-        swal.fire({
-          title: d.brand + " " + d.model,
-          html: "CO2 emissions: " + d.emissions.toFixed(2) + " g/km <br />" + "Class: " + d.vehicleClass
-        }
-        ); // Show emissions on click
+      .on("mouseout", function (d) {
+        tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
       });
+
+    // Add tooltip div
+    const tooltip = d3.select("body")
+      .append("div")
+      .style("position", "absolute")
+      .style("background", "#fff")
+      .style("border", "1px solid #ccc")
+      .style("padding", "5px")
+      .style("border-radius", "5px")
+      .style("pointer-events", "none")
+      .style("opacity", 0);
 
     /* Axes */
     // X-axis

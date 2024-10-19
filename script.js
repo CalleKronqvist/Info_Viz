@@ -7,6 +7,7 @@ function init() {
         createBarchart(originalData, ".BarChart");
         createLineChart(originalData, ".LineChart");
         createLegend(originalData, ".Legend")
+        createViolinchart(originalData, ".ViolinChart")
         // updateVisualizations()
     });
 }
