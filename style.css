@@ -77,6 +77,10 @@ header {
     grid-area: ScatterPlot;
 }
 
+.ViolinPlot {
+    grid-area: ViolinPlot;
+}
+
 .Filter {
     grid-area: Filter;
 }
@@ -151,4 +155,63 @@ button {
     .flex-item {
         flex: 1 1 100%;
     }
+}
+
+/****************************************************
+ *  Define the styles for the slider                *
+ ****************************************************/
+
+/* style.css */
+
+/* Container for the slider */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+}
+
+/* SVG for the slider */
+.slider-container svg {
+    width: 100%;
+    height: 100px;
+}
+
+/* Track styles */
+.track {
+    stroke: #ddd;
+    stroke-width: 8px;
+    stroke-linecap: round;
+}
+
+.track-inset {
+    stroke: #ddd;
+    stroke-width: 8px;
+    stroke-linecap: round;
+}
+
+.track-overlay {
+    pointer-events: stroke;
+    stroke-width: 50px;
+    stroke: transparent;
+}
+
+/* Handle styles */
+.handle {
+    fill: #2196f3;
+    stroke: #000;
+    stroke-width: 1.5px;
+}
+
+/* Ticks styles */
+.ticks text {
+    font-size: 12px;
+    fill: #666;
+}
+
+/* Labels for the slider */
+.slider-container label {
+    margin: 5px;
+    font-size: 14px;
+    color: #333;
 }

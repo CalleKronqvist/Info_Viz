@@ -2,16 +2,18 @@
 
 async function createViolinchart(data, containerId) {
     /* Dimensions */
-    let fixedWidth = window.innerWidth * 0.5;
+    let fixedWidth = window.innerWidth * 0.4;
     let fixedHeight = 400;
     let margin = {
         top: 30,
         right: 60,
         bottom: 60,
-        left: 30,  // Increase to fit long model names
+        left: 60,
     };
 
     await d3.json("../colorPalette.json").then((c) => {
+
+        const colorPalette = c;
         let sortedData = data
             .map(d => ({
                 model: d.MODEL,
@@ -19,17 +21,25 @@ async function createViolinchart(data, containerId) {
                 vehicleClass: d['VEHICLE CLASS'],
                 brand: d['MAKE']
             }))
-            .slice(0, 5);
 
-        const classes = Array.from(new Set(sortedData.map(d => d.vehicleClass)));
-        const models = Array.from(new Set(sortedData.map(d => d.model)));
+        console.log(sortedData);
+
+        const classes = Array
+            .from(new Set(sortedData.map(d => d.vehicleClass)))
+            .slice(0, 5)
+        // .slice((sortedData) => {
+        //     return sortedData.length > 5 ? (0, 5) : (0, sortedData.length);
+        // });
+
+        console.log(classes);
 
         // Create X axis
         const xScale = d3
             .scaleBand()
             .domain(classes)
-            .range([margin.left, fixedWidth - margin.right])
-            .padding(0.2);
+            // .range([margin.left, fixedWidth - margin.right]);
+            .range([0, fixedWidth])
+            .padding(0.1);
 
         // Create Y axis
         const yScale = d3
@@ -37,6 +47,7 @@ async function createViolinchart(data, containerId) {
             .domain([0, d3.max(sortedData, d => d.emissions)])  // Adjust this range based on your dataset
             .range([fixedHeight - margin.bottom, margin.top]);
 
+        // plot container
         const svg = d3.select(containerId)
             .append("svg")
             .attr("width", fixedWidth)
@@ -44,12 +55,13 @@ async function createViolinchart(data, containerId) {
             .append("g")
             .attr("transform", `translate(${margin.left},${margin.top})`);
 
+        // x-axis labels   
         svg.append("g")
             .attr("transform", `translate(0,${fixedHeight - margin.bottom})`)
             .call(d3.axisBottom(xScale))
             .selectAll("text")
             .attr("class", "axis-label")
-            .attr("transform", "rotate(-30)")
+            // .attr("transform", "rotate(-30)")
             .style("text-anchor", "end");
 
         svg.append("g").call(d3.axisLeft(yScale));
@@ -87,7 +99,7 @@ async function createViolinchart(data, containerId) {
                 .datum(density)
                 .attr("class", "violin")
                 .attr("d", area)
-                .style("fill", "#69b3a2")
+                .style("fill", colorPalette[cl])  // Apply color scale based on vehicle class
                 .style("stroke", "black");
         });
     });

@@ -19,27 +19,29 @@ function createLineChart(data) {
         bottom: 60,
         left: 60
     };
-    const width = window.innerWidth / 2;
+    const fixedWidth = window.innerWidth * 0.4;
     const height = 400;
 
 
     /* Scales */
     const xScale = d3.scaleLinear()
         .domain(d3.extent(formattedData, d => d.year))
-        .range([margin.left, width - margin.right]);
+        .range([margin.left, fixedWidth - margin.right]);
 
-    const yScaleLeft = d3.scaleLinear()
+    const yScaleLeft = d3
+        .scaleLinear()
         .domain([0, d3.max(formattedData, d => d.avgEmissions)])
         .range([height - margin.bottom, margin.top]);
 
-    const yScaleRight = d3.scaleLinear()
+    const yScaleRight = d3
+        .scaleLinear()
         .domain([0, d3.max(formattedData, d => d.totalCost)])
         .range([height - margin.bottom, margin.top]);
 
     /* SVG container */
     const svg = d3.select(".LineChart")
         .append("svg")
-        .attr("width", width)
+        .attr("width", fixedWidth)
         .attr("height", height);
 
     const tooltip = d3.select("body")
@@ -133,7 +135,7 @@ function createLineChart(data) {
         .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));  // Format years as integers
     svg
         .append("text")
-        .attr("x", width / 2)
+        .attr("x", fixedWidth / 2)
         .attr("y", height - margin.bottom / 3)
         .attr("text-anchor", "middle")
         .text("Year");
@@ -156,7 +158,7 @@ function createLineChart(data) {
     // Right Y axis
 
     svg.append("g")
-        .attr("transform", `translate(${width - margin.right},0)`)
+        .attr("transform", `translate(${fixedWidth - margin.right},0)`)
         .attr("class", "axisGreen")
         // .style("stroke", "green")		
         .call(d3.axisRight(yScaleRight));
@@ -164,7 +166,7 @@ function createLineChart(data) {
         .append("text")
         // .attr("class", "axisGreen")
         .attr("x", height / 2)
-        .attr("y", -width + margin.right / 2)
+        .attr("y", -fixedWidth + margin.right / 2)
         .attr("text-anchor", "middle")
         .attr("transform", `rotate(90)`)
         .style("fill", "green")
@@ -173,7 +175,7 @@ function createLineChart(data) {
     // Title
     svg
         .append("text")
-        .attr("x", width / 2)
+        .attr("x", fixedWidth / 2)
         .attr("y", margin.top / 1.6)
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
@@ -202,13 +204,13 @@ function updateLineChart(data) {
         bottom: 60,
         left: 60
     };
-    const width = window.innerWidth / 2;
+    const fixedWidth = window.innerWidth * 0.4;
     const height = 400;
 
     /* Scales */
     const xScale = d3.scaleLinear()
         .domain(d3.extent(formattedData, d => d.year))
-        .range([margin.left, width - margin.right]);
+        .range([margin.left, fixedWidth - margin.right]);
 
     const yScaleLeft = d3.scaleLinear()
         .domain([0, d3.max(formattedData, d => d.avgEmissions)])
