@@ -186,6 +186,9 @@ function createLineChart(data) {
 }
 function updateLineChart(data) {
     /* Pre-process*/
+
+    console.log(data);
+
     let filteredData = data.filter(d => d['FUEL'] === 'X');
 
     let groupedData = d3.group(filteredData, d => d.YEAR);
