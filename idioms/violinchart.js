@@ -22,7 +22,6 @@ async function createViolinchart(data, containerId) {
                 brand: d['MAKE']
             }))
 
-        console.log(sortedData);
 
         const classes = Array
             .from(new Set(sortedData.map(d => d.vehicleClass)))
@@ -103,4 +102,19 @@ async function createViolinchart(data, containerId) {
                 .style("stroke", "black");
         });
     });
+}
+
+async function updateViolinChart(filteredData) {
+    /* Dimensions */
+    let fixedWidth = window.innerWidth * 0.4;
+    let fixedHeight = 400;
+    let margin = {
+        top: 30,
+        right: 60,
+        bottom: 60,
+        left: 60,
+    };
+
+    /* TODO ONCE MAIN FUNCTION WORKS PROPERLY */
+
 }

@@ -1,15 +1,13 @@
-async function createLegend(data, containerId) {
+d3.json("data.json").then(data => {
+    createLegend(data);
+});
+
+async function createLegend(data, containerId = ".Legend") {
     let colorPalette = null;
 
     await d3.json("../colorPalette.json").then((c) => {
         colorPalette = c;
     });
-
-    // let colorPalette = [
-    //     "#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99",
-    //     "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a",
-    //     "#ffff99", "#b15928"
-    // ];
 
     // Get unique vehicle classes
     const vehicleClasses = Array.from(new Set(data.map(d => d['VEHICLE CLASS'])));
@@ -42,7 +40,6 @@ async function createLegend(data, containerId) {
 
     // Create a colored rectangle for each class
     vehicleClasses.forEach((vehicleClass, index) => {
-
 
         const legendItem = legend.append("g")
             .attr("class", "legend-item")
@@ -86,7 +83,6 @@ async function createLegend(data, containerId) {
 
         });
 
-
         // Modify the click event
         legendItem.on("click", function (event, d) {
             if (selectedClasses.has(d)) {
@@ -107,10 +103,41 @@ async function createLegend(data, containerId) {
                 d3.select(this).select("text")
                     .style("font-weight", "bold");
             }
-            updateVisualizations()
 
+            filterData(data);
             console.log("Selected vehicle classes:", Array.from(selectedClasses));
         });
 
     })
+}
+
+function filterData(data) {
+
+    // get the other filters/sliders
+    const selectedFuel = d3.select('#fuelDropdown').property('value');
+    const selectedBrand = d3.select('#brandDropdown').property('value');
+    const selectedEngineSize = d3.select('#engineSizeDropdown').property('value');
+    const startYear = +d3.select('#startYearLabel').text();
+    const endYear = +d3.select('#endYearLabel').text();
+
+    let filteredData = data.filter(d => d.YEAR >= startYear && d.YEAR <= endYear);
+
+    if (selectedFuel !== 'All') {
+        filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
+    }
+
+    if (selectedBrand !== 'All') {
+        filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
+    }
+
+    if (selectedEngineSize !== 'All') {
+        filteredData = filteredData.filter(d => d['ENGINE SIZE'] === selectedEngineSize);
+    }
+
+    if (selectedClasses.size > 0) {
+        filteredData = filteredData.filter(d => selectedClasses.has(d['VEHICLE CLASS']));
+    }
+
+    // Update the visualization with the filtered data
+    updateVisualizations(filteredData);
 }

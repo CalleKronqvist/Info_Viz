@@ -30,7 +30,7 @@ async function createBarchart(data, containerId) {
         brand: d['MAKE']              // brand for on-click event
       }))
       .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
-      .slice(0, 30);
+      .slice(0, 10); // changed this to 10 for now for better display
 
     /* Scales */
     // Set up the xScale for EMISSIONS (CO2)
@@ -70,7 +70,7 @@ async function createBarchart(data, containerId) {
         tooltip.transition()
           .duration(200)
           .style("opacity", .9);
-        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}`)
+        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}<br/>Brand: ${d.brand}<br/>Vehicle Class: ${d.vehicleClass}`)
           .style("left", (event.pageX) + "px")
           .style("top", (event.pageY - 28) + "px");
       })
@@ -161,7 +161,7 @@ async function updateBarchart(data) {
         brand: d['MAKE']              // brand for on-click event
       }))
       .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
-      .slice(0, 30);
+      .slice(0, 10);
 
 
     const xScale = d3
@@ -209,7 +209,7 @@ async function updateBarchart(data) {
         tooltip.transition()
           .duration(200)
           .style("opacity", .9);
-        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}`)
+        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}<br/>Brand: ${d.brand}<br/>Vehicle Class: ${d.vehicleClass}`)
           .style("left", (event.pageX) + "px")
           .style("top", (event.pageY - 28) + "px");
       })

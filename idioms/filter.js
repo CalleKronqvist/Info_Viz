@@ -1,11 +1,65 @@
-// filter.js
-
 // Load the data
 d3.json("data.json").then(data => {
+    console.log(data);
+    createFilters(data);
     createSlider(data);
 });
 
+function createFilters(data) {
+    const filterContainer = d3.select('.Filter')
+        .append('div')
+        .attr('class', 'filter-container');
+
+    // Create dropdown for vehicle class
+    const fuelDropdown = filterContainer.append('select')
+        .attr('class', 'dropdown')
+        .attr('id', 'fuelDropdown')
+        .on('change', function () {
+            filterData(data);
+        });
+
+    fuelDropdown.selectAll('option')
+        .data(['All', ...new Set(data.map(d => d['FUEL']))])
+        .enter()
+        .append('option')
+        .text(d => d);
+
+    // Create dropdown for brand
+    const brandDropdown = filterContainer.append('select')
+        .attr('class', 'dropdown')
+        .attr('id', 'brandDropdown')
+        .on('change', function () {
+            filterData(data);
+        });
+
+    brandDropdown.selectAll('option')
+        .data(['All', ...new Set(data.map(d => d['MAKE']))])
+        .enter()
+        .append('option')
+        .text(d => d);
+
+    // Create dropdown for model
+    const engineSizeDropdown = filterContainer.append('select')
+        .attr('class', 'dropdown')
+        .attr('id', 'engineSizeDropdown')
+        .on('change', function () {
+            filterData(data);
+        });
+
+    engineSizeDropdown.selectAll('option')
+        .data(['All', ...new Set(data.map(d => d['ENGINE SIZE']))])
+        .enter()
+        .append('option')
+        .text(d => d);
+}
+
 function createSlider(data) {
+
+    const fixedWidth = window.innerWidth * 0.4;
+    //const height = 400;
+
+
+
     // Get the range of years from the data
     const years = data.map(d => d.YEAR);
     const minYear = d3.min(years);
@@ -18,7 +72,7 @@ function createSlider(data) {
 
     // Create the SVG for the slider
     const svg = sliderContainer.append('svg')
-        .attr('width', 500)
+        .attr('width', fixedWidth)
         .attr('height', 100);
 
     // Create the scale for the slider
@@ -55,14 +109,17 @@ function createSlider(data) {
                 const handle1Pos = x.invert(handle.attr('cx'));
                 const handle2Pos = x.invert(handle2.attr('cx'));
 
-                if (Math.abs(pos - handle1Pos) < Math.abs(pos - handle2Pos)) {
-                    handle.attr('cx', x(pos));
+                // Snap to the nearest year
+                const snappedPos = Math.round(pos);
+
+                if (Math.abs(snappedPos - handle1Pos) < Math.abs(snappedPos - handle2Pos)) {
+                    handle.attr('cx', x(snappedPos));
                 } else {
-                    handle2.attr('cx', x(pos));
+                    handle2.attr('cx', x(snappedPos));
                 }
 
-                const startYear = Math.min(handle1Pos, handle2Pos);
-                const endYear = Math.max(handle1Pos, handle2Pos);
+                const startYear = Math.min(x.invert(handle.attr('cx')), x.invert(handle2.attr('cx')));
+                const endYear = Math.max(x.invert(handle.attr('cx')), x.invert(handle2.attr('cx')));
 
                 updateLabelAndFilter(data, [startYear, endYear]);
             }));
@@ -109,16 +166,34 @@ function createSlider(data) {
     }
 }
 
-function filterData(data, selectedYears) {
-    const [startYear, endYear] = selectedYears;
-    const filteredData = data.filter(d => d.YEAR >= startYear && d.YEAR <= endYear);
+
+function filterData(data) {
+
+    // get the other filters/sliders
+    const selectedFuel = d3.select('#fuelDropdown').property('value');
+    const selectedBrand = d3.select('#brandDropdown').property('value');
+    const selectedEngineSize = d3.select('#engineSizeDropdown').property('value');
+    const startYear = +d3.select('#startYearLabel').text();
+    const endYear = +d3.select('#endYearLabel').text();
+
+    let filteredData = data.filter(d => d.YEAR >= startYear && d.YEAR <= endYear);
+
+    if (selectedFuel !== 'All') {
+        filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
+    }
+
+    if (selectedBrand !== 'All') {
+        filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
+    }
+
+    if (selectedEngineSize !== 'All') {
+        filteredData = filteredData.filter(d => d['ENGINE SIZE'] === selectedEngineSize);
+    }
+
+    if (selectedClasses.size > 0) {
+        filteredData = filteredData.filter(d => selectedClasses.has(d['VEHICLE CLASS']));
+    }
 
     // Update the visualization with the filtered data
-    updateVisualization(filteredData);
-}
-
-function updateVisualization(filteredData) {
-    // Implement the logic to update your visualization with the filtered data
-
-    console.log(filteredData);
+    updateVisualizations(filteredData);
 }

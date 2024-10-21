@@ -6,20 +6,20 @@ function init() {
         originalData = data;
         createBarchart(originalData, ".BarChart");
         createLineChart(originalData, ".LineChart");
-        createLegend(originalData, ".Legend")
+        // createLegend(originalData, ".Legend")
         createViolinchart(originalData, ".ViolinChart")
         // updateVisualizations()
     });
 }
-function updateVisualizations() {
-    const filteredData = getFilteredData();
+function updateVisualizations(filteredData) {
+    // const filteredData = getFilteredData();
     updateBarchart(filteredData);
     updateLineChart(filteredData);
-    // createLegend(filteredData, ".Legend")
+    updateViolinChart(filteredData);
 }
-function getFilteredData() {
-    if (selectedClasses.size === 0) return originalData; // No filter applied
+// function getFilteredData() {
+//     if (selectedClasses.size === 0) return originalData; // No filter applied
 
-    return originalData.filter(d => selectedClasses.has(d['VEHICLE CLASS']));
-}
+//     return originalData.filter(d => selectedClasses.has(d['VEHICLE CLASS']));
+// }
 
