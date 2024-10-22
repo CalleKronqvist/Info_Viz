@@ -25,7 +25,7 @@ function createLineChart(data) {
 
     /* Scales */
     const xScale = d3.scaleLinear()
-        .domain(d3.extent(formattedData, d => d.year))
+        .domain([2000, 2022])
         .range([margin.left, fixedWidth - margin.right]);
 
     const yScaleLeft = d3
@@ -212,7 +212,7 @@ function updateLineChart(data) {
 
     /* Scales */
     const xScale = d3.scaleLinear()
-        .domain(d3.extent(formattedData, d => d.year))
+        .domain([2000,2022])
         .range([margin.left, fixedWidth - margin.right]);
 
     const yScaleLeft = d3.scaleLinear()
@@ -329,7 +329,7 @@ function updateLineChart(data) {
                 .attr("cx", d => xScale(d.year))
                 .attr("cy", d => yScaleRight(d.totalCost))  
                 .style("fill", "green")
-                .style("opacity", 0.5)
+                .style("opacity", 1)
                 .on("mouseover", function (event, d) {
                     d3.select(this).attr("r", 7);  // Enlarge point on hover
                     tooltip

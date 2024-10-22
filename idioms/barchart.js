@@ -22,12 +22,12 @@ async function createBarchart(data, containerId) {
     //   .domain(vehicleClasses)   // The domain is the unique vehicle classes
     //   .range(colorPalette);     // The range is the color palette you've provided
 
-    let sortedData = data
-      .map(d => ({
-        model: d.MODEL,               // Use MODEL for y-axis
-        emissions: d['EMISSIONS'],    // Use EMISSIONS for x-axis
-        vehicleClass: d['VEHICLE CLASS'],  // Get vehicle class for color mapping
-        brand: d['MAKE']              // brand for on-click event
+    let sortedData = d3.groups(data, d => d.MODEL)
+      .map(([model, values]) => ({
+          model: model,
+          emissions: d3.mean(values, d => d['EMISSIONS']),
+          vehicleClass: values[0]['VEHICLE CLASS'], // Assuming the vehicle class is the same for all instances of a model
+          brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
       }))
       .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
       .slice(0, 10); // changed this to 10 for now for better display
@@ -153,15 +153,15 @@ async function updateBarchart(data) {
       .domain(vehicleClasses)   // The domain is the unique vehicle classes
       .range(colorPalette);     // The range is the color palette you've provided
 
-    let sortedData = data
-      .map(d => ({
-        model: d.MODEL,               // Use MODEL for y-axis
-        emissions: d['EMISSIONS'],    // Use EMISSIONS for x-axis
-        vehicleClass: d['VEHICLE CLASS'],  // Get vehicle class for color mapping
-        brand: d['MAKE']              // brand for on-click event
+    let sortedData = d3.groups(data, d => d.MODEL)
+      .map(([model, values]) => ({
+          model: model,
+          emissions: d3.mean(values, d => d['EMISSIONS']),
+          vehicleClass: values[0]['VEHICLE CLASS'], // Assuming the vehicle class is the same for all instances of a model
+          brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
       }))
       .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
-      .slice(0, 10);
+      .slice(0, 10); // changed this to 10 for now for better display
 
 
     const xScale = d3

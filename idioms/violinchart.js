@@ -25,13 +25,13 @@ async function createViolinchart(data, containerId) {
     await d3.json("../colorPalette.json").then((c) => {
 
         const colorPalette = c;
-        let sortedData = data
-            .map(d => ({
-                model: d.MODEL,
-                emissions: d['EMISSIONS'],
-                vehicleClass: d['VEHICLE CLASS'],
-                brand: d['MAKE']
-            }))
+        let sortedData = d3.groups(data, d => d.MODEL)
+            .map(([model, values]) => ({
+                model: model,
+                emissions: d3.mean(values, d => d['EMISSIONS']),
+                vehicleClass: values[0]['VEHICLE CLASS'], // Assuming the vehicle class is the same for all instances of a model
+                brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
+            }));
 
 
         const classes = Array
@@ -103,8 +103,8 @@ async function createViolinchart(data, containerId) {
 
             // Area generator for violin plot, symmetric on both sides of the x-axis
             const area = d3.area()
-                .x0(d => xScale(cl) + violinWidth /2 - d[1] * violinWidth / 2)  // Left side of violin
-                .x1(d => xScale(cl) + violinWidth  /2 + d[1] * violinWidth / 2)  // Right side of violin
+                .x0(d => xScale(cl) + violinWidth /2 - d[1] * violinWidth / 2.3)  // Left side of violin
+                .x1(d => xScale(cl) + violinWidth  /2 + d[1] * violinWidth / 2.3)  // Right side of violin
                 .y(d => yScale(d[0]))  // Emissions (y-axis)
                 .curve(d3.curveBasis);  // Smooth curve
 
@@ -171,7 +171,7 @@ async function createViolinchart(data, containerId) {
 
 async function updateViolinChart(filteredData) {
     /* Dimensions */
-    let fixedWidth = window.innerWidth * 0.4;
+    let fixedWidth = window.innerWidth * 0.45;
     let fixedHeight = 400;
     let margin = {
         top: 30,
@@ -194,13 +194,13 @@ async function updateViolinChart(filteredData) {
 
         const colorPalette = c;
 
-        let sortedData = filteredData
-            .map(d => ({
-                model: d.MODEL,
-                emissions: d['EMISSIONS'],
-                vehicleClass: d['VEHICLE CLASS'],
-                brand: d['MAKE']
-            }))
+        let sortedData = d3.groups(filteredData, d => d.MODEL)
+            .map(([model, values]) => ({
+                model: model,
+                emissions: d3.mean(values, d => d['EMISSIONS']),
+                vehicleClass: values[0]['VEHICLE CLASS'], // Assuming the vehicle class is the same for all instances of a model
+                brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
+            }));
 
         console.log(sortedData);
 
@@ -278,8 +278,8 @@ async function updateViolinChart(filteredData) {
 
             // Area generator for violin plot, symmetric on both sides of the x-axis
             const area = d3.area()
-                .x0(d => xScale(cl) + violinWidth /2 - d[1] * violinWidth / 2)  // Left side of violin
-                .x1(d => xScale(cl) + violinWidth /2 + d[1] * violinWidth / 2)  // Right side of violin
+                .x0(d => xScale(cl) + violinWidth /2 - d[1] * violinWidth / 2.3)  // Left side of violin
+                .x1(d => xScale(cl) + violinWidth /2 + d[1] * violinWidth / 2.3)  // Right side of violin
                 .y(d => yScale(d[0]))  // Emissions (y-axis)
                 .curve(d3.curveBasis)  // Smooth curve
 
