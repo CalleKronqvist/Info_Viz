@@ -225,6 +225,17 @@ function updateLineChart(data) {
 
     const svg = d3.select(".LineChart svg");
 
+    const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "#fff")
+        .style("border", "1px solid #ccc")
+        .style("padding", "5px")
+        .style("border-radius", "5px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
+
     const emissionLine = d3.line()
         .x(d => xScale(d.year))
         .y(d => yScaleLeft(d.avgEmissions));
@@ -267,7 +278,7 @@ function updateLineChart(data) {
                 .attr("cx", d => xScale(d.year))
                 .attr("cy", d => yScaleLeft(d.avgEmissions))
                 .style("fill", "steelblue")
-                .style("opacity", 0)
+                .style("opacity", 1)
                 .on("mouseover", function (event, d) {
                     d3.select(this).attr("r", 7);  // Enlarge point on hover
                     tooltip
@@ -318,7 +329,7 @@ function updateLineChart(data) {
                 .attr("cx", d => xScale(d.year))
                 .attr("cy", d => yScaleRight(d.totalCost))  
                 .style("fill", "green")
-                .style("opacity", 0)
+                .style("opacity", 0.5)
                 .on("mouseover", function (event, d) {
                     d3.select(this).attr("r", 7);  // Enlarge point on hover
                     tooltip

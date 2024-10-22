@@ -11,6 +11,17 @@ async function createViolinchart(data, containerId) {
         left: 60,
     };
 
+    // Create tooltip
+    const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "#fff")
+        .style("border", "1px solid #ccc")
+        .style("padding", "5px")
+        .style("border-radius", "5px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
     await d3.json("../colorPalette.json").then((c) => {
 
         const colorPalette = c;
@@ -97,12 +108,35 @@ async function createViolinchart(data, containerId) {
                 .y(d => yScale(d[0]))  // Emissions (y-axis)
                 .curve(d3.curveBasis);  // Smooth curve
 
-            svg.append("path")
+            const path = svg.append("path")
                 .datum(density)
                 .attr("class", "violin")
                 .attr("d", area)
                 .style("fill", colorPalette[cl])  // Apply color scale based on vehicle class
                 .style("stroke", "black");
+            
+            // Tooltip interaction
+            path.on("mouseenter", function (event, d) {
+                tooltip.transition().duration(200).style("opacity", 1);
+            })
+            .on("mousemove", function (event, d) {
+                const [mouseX, mouseY] = d3.pointer(event);
+                tooltip.html(`
+                    <b>Vehicle Class:</b> ${cl}<br>
+                    <b>CO2 Emissions:</b><br>
+                    Max: ${d3.max(emissions)} g/km<br>
+                    Min: ${d3.min(emissions)} g/km<br>
+                    Median: ${d3.median(emissions)} g/km<br>
+                    Mean: ${d3.mean(emissions).toFixed(2)} g/km<br>
+                    `)
+                    .style("left", (event.pageX + 20) + "px")
+                    .style("top", (event.pageY - 30) + "px");
+            })
+            .on("mouseleave", function () {
+                tooltip.transition().duration(200).style("opacity", 0);
+            });
+            
+            
 
             // Title
             svg
@@ -145,6 +179,16 @@ async function updateViolinChart(filteredData) {
         bottom: 60,
         left: 60,
     };
+    // Create tooltip
+    const tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "#fff")
+        .style("border", "1px solid #ccc")
+        .style("padding", "5px")
+        .style("border-radius", "5px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
 
     await d3.json("../colorPalette.json").then((c) => {
 
@@ -239,28 +283,54 @@ async function updateViolinChart(filteredData) {
                 .y(d => yScale(d[0]))  // Emissions (y-axis)
                 .curve(d3.curveBasis)  // Smooth curve
 
-
-            svg.append("path")
+            // Initialize path
+            const path = svg.append("path")
                 .datum(density)
-                .style("fill", "#FFFFFF") // for smoother transition
-                .style("stroke", "#FFFFFF")
-                .transition()
-                .duration(1000)
-                .style("fill", colorPalette[cl])  // Apply color scale based on vehicle class
                 .attr("class", "violin")
                 .attr("d", area)
-                .style("stroke", "black");
+                .style("fill", "#FFFFFF")  // Initially set to white for smoother transition
+                .style("stroke", "#FFFFFF");  // Initially set to white for smoother transition
             
-                 // Title
-                 svg
-                 .append("text")
-                 .attr("x", fixedWidth / 2)
-                 .attr("y", margin.top / 2)
-                 .attr("text-anchor", "middle")
-                 .style("font-size", "16px")
-                 .style("font-weight", "bold")
-                 .text("Distribution of CO2 Emissions per Vehicle Class");
-             
+            // Add tooltip hover events before applying the transition or it will break
+            path.on("mouseenter", function (event, d) {
+                tooltip.transition().duration(200).style("opacity", 1);
+            })
+            .on("mousemove", function (event, d) {
+                const [mouseX, mouseY] = d3.pointer(event);
+                tooltip.html(`
+                    <b>Vehicle Class:</b> ${cl}<br>
+                    <b>CO2 Emissions:</b><br>
+                    Max: ${d3.max(emissions)} g/km<br>
+                    Min: ${d3.min(emissions)} g/km<br>
+                    Median: ${d3.median(emissions)} g/km<br>
+                    Mean: ${d3.mean(emissions).toFixed(2)} g/km<br>
+                    `)
+                    .style("left", (event.pageX + 20) + "px")
+                    .style("top", (event.pageY - 30) + "px");
+            })
+            .on("mouseleave", function () {
+                tooltip.transition().duration(200).style("opacity", 0);
+            });
+            
+            // Transition
+            path.transition()
+                .duration(1000)
+                .style("fill", colorPalette[cl])  // Apply color scale based on vehicle class
+                .style("stroke", "black");
+            });
+
+            
+    
+            // Title
+            svg
+                .append("text")
+                .attr("x", fixedWidth / 2)
+                .attr("y", margin.top / 2)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("font-weight", "bold")
+                .text("Distribution of CO2 Emissions per Vehicle Class");
+                
              // Y-Axis
              svg
                  .append("text")
@@ -276,6 +346,6 @@ async function updateViolinChart(filteredData) {
                  .attr("y", fixedHeight - margin.bottom / 3)
                  .attr("text-anchor", "middle")
                  .text("Vehicle Class");
-        });
+        
     });
 }   
