@@ -72,11 +72,11 @@ function createLineChart(data) {
         .attr("stroke-width", 1.5)
         .attr("d", emissionLine);
     svg
-        .selectAll("circleEmissions")
+        .selectAll("circle.emissions")
         .data(formattedData)
         .enter()
         .append("circle")
-        .attr("class", "dataItem")
+        .attr("class", "dataItemEmissions")
         .attr("r", 5)
         .attr("cx", (d) => xScale(d.year))
         .attr("cy", (d) => yScaleLeft(d.avgEmissions))
@@ -104,7 +104,7 @@ function createLineChart(data) {
         .attr("stroke-width", 1.5)
         .attr("d", costLine);
     svg
-        .selectAll("circleCost")
+        .selectAll("circle.cost")
         .data(formattedData)
         .enter()
         .append("circle")
@@ -232,52 +232,169 @@ function updateLineChart(data) {
         .x(d => xScale(d.year))
         .y(d => yScaleRight(d.totalCost));
 
-
-    svg.select(".lineEmissions")
+    svg
+        .selectAll("circle.dataItemEmissions")
+        .data(formattedData, d => d.year)
+        .exit()
+        .remove();
+    svg
+        .select("path.lineEmissions")
         .datum(formattedData)
+        .attr("class", "lineEmissions")
         .transition()
         .duration(1000)
-        .attr("d", emissionLine);
-
-    // Data join for emission points
-    const emissionPoints = svg.selectAll(".dataItem")
-        .data(formattedData, d => d.year);  // Use year as a key to track data
-
-    emissionPoints.exit().remove();  // Remove old points
-
-    emissionPoints.enter()
-        .append("circle")
-        .attr("class", "dataItem")
+        .attr("d", emissionLine)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5);
+    svg
+        .selectAll("circle.dataItemEmissions")
+        .data(formattedData, d => d.year)
+        .transition()
+        .duration(1000)
         .attr("r", 5)
-        .attr("fill", "steelblue")
-        .merge(emissionPoints)  // Merge new and existing points
-        .transition()
-        .duration(1000)
         .attr("cx", d => xScale(d.year))
-        .attr("cy", d => yScaleLeft(d.avgEmissions));
+        .attr("cy", d => yScaleLeft(d.avgEmissions))
+        .end()
+        .then(() => {
+            const allCircle = svg
+                .selectAll("circle.dataItemEmissions")
+                .data(formattedData, d => d.year)
+                .enter()
+                .append("circle")
+                .attr("class", "dataItemEmissions")
+                .attr("r", 5)
+                .attr("cx", d => xScale(d.year))
+                .attr("cy", d => yScaleLeft(d.avgEmissions))
+                .style("fill", "steelblue")
+                .style("stroke", "black")
+                .style("stroke-width", 1)
+                .style("opacity", 0.5)
+                .on("mouseover", function (event, d) {
+                    d3.select(this).attr("r", 7);  // Enlarge point on hover
+                    tooltip
+                        .style("opacity", 1)
+                        .html(`Year: ${d.year}<br>Avg Emissions: ${d.avgEmissions.toFixed(2)} g/km`)
+                        .style("left", `${event.pageX + 10}px`)
+                        .style("top", `${event.pageY - 25}px`);
+                })
+                .on("mouseleave", function () {
+                    d3.select(this).attr("r", 5);  // Reset point size
+                    tooltip.style("opacity", 0);  // Hide tooltip
+                });
+            allCircle.transition().duration(1000).style("opacity", 1);
+            });
 
-    // Update the cost line
-    svg.select(".lineCost")
+    svg
+        .selectAll("circle.dataItemCost")
+        .data(formattedData, d => d.year)
+        .exit()
+        .remove();
+    svg
+        .select("path.lineCost")
         .datum(formattedData)
+        .attr("class", "lineCost")
         .transition()
         .duration(1000)
-        .attr("d", costLine);
-
-    // Data join for cost points
-    const costPoints = svg.selectAll(".dataItemCost")
-        .data(formattedData, d => d.year);
-
-    costPoints.exit().remove();  // Remove old points
-
-    costPoints.enter()
-        .append("circle")
-        .attr("class", "dataItemCost")
+        .attr("d", costLine)
+        .attr("fill", "none")
+        .attr("stroke", "green")
+        .attr("stroke-width", 1.5);
+    svg
+        .selectAll("circle.dataItemCost")
+        .data(formattedData, d => d.year)
+        .transition()
+        .duration(1000)
         .attr("r", 5)
-        .attr("fill", "green")
-        .merge(costPoints)  // Merge new and existing points
-        .transition()
-        .duration(1000)
         .attr("cx", d => xScale(d.year))
-        .attr("cy", d => yScaleRight(d.totalCost));
+        .attr("cy", d => yScaleRight(d.totalCost))
+        .end()
+        .then(() => {
+            const allCircle = svg
+                .selectAll("circle.dataItemCost")
+                .data(formattedData, d => d.year)
+                .enter()
+                .append("circle")
+                .attr("class", "dataItemCost")
+                .attr("r", 5)
+                .attr("cx", d => xScale(d.year))
+                .attr("cy", d => yScaleRight(d.totalCost))  
+                .style("fill", "green")
+                .style("opacity", 0.5)
+                .on("mouseover", function (event, d) {
+                    d3.select(this).attr("r", 7);  // Enlarge point on hover
+                    tooltip
+                        .style("opacity", 1)
+                        .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$`)
+                        .style("left", `${event.pageX + 10}px`)
+                        .style("top", `${event.pageY - 25}px`);
+                        })
+                .on("mouseleave", function () {
+                    d3.select(this).attr("r", 5);  // Reset point size
+                    tooltip.style("opacity", 0);  // Hide tooltip
+                });
+            allCircle.transition().duration(1000).style("opacity", 1);
+            });
+
+    // svg.select(".lineEmissions")
+    //     .datum(formattedData)
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("d", emissionLine);
+
+    
+
+    // // Data join for emission points
+    // const emissionPoints = svg.selectAll(".dataItem")
+    //     .data(formattedData, d => d.year);  // Use year as a key to track data
+
+    // emissionPoints.exit().remove();  // Remove old points
+
+    // emissionPoints.enter()
+    //     .append("circle")
+    //     .attr("class", "dataItem")
+    //     .attr("r", 5)
+    //     .attr("fill", "steelblue")
+    //     .merge(emissionPoints)  // Merge new and existing points
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("cx", d => xScale(d.year))
+    //     .attr("cy", d => yScaleLeft(d.avgEmissions));
+
+    // // Update the cost line
+    // svg.select(".lineCost")
+    //     .datum(formattedData)
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("d", costLine);
+
+    // // Data join for cost points
+    // svg.selectAll(".dataItemCost")
+    //     .data(formattedData, d => d.year)
+    //     .exit()
+    //     .remove();  // Remove old points
+
+    // svg.enter()
+    //     .append("circle")
+    //     .attr("class", "dataItemCost")
+    //     .attr("r", 5)
+    //     .attr("fill", "green")
+    //     .merge(costPoints)  // Merge new and existing points
+    //     .transition()
+    //     .duration(1000)
+    //     .attr("cx", d => xScale(d.year))
+    //     .attr("cy", d => yScaleRight(d.totalCost))
+    //     .on("mouseover", function (event, d) {
+    //         d3.select(this).attr("r", 7);  // Enlarge point on hover
+    //         tooltip
+    //             .style("opacity", 1)
+    //             .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$`)
+    //             .style("left", `${event.pageX + 10}px`)
+    //             .style("top", `${event.pageY - 25}px`);
+    //     })
+    //     .on("mouseleave", function () {
+    //         d3.select(this).attr("r", 5);  // Reset point size
+    //         tooltip.style("opacity", 0);  // Hide tooltip
+    //     });
 
 }
