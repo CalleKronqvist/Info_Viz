@@ -2,7 +2,7 @@
 
 async function createViolinchart(data, containerId) {
     /* Dimensions */
-    let fixedWidth = window.innerWidth * 0.4;
+    let fixedWidth = window.innerWidth * 0.45;
     let fixedHeight = 400;
     let margin = {
         top: 30,
@@ -25,7 +25,7 @@ async function createViolinchart(data, containerId) {
 
         const classes = Array
             .from(new Set(sortedData.map(d => d.vehicleClass)))
-            .slice(0, 5)
+            .slice(0, 3)
         // .slice((sortedData) => {
         //     return sortedData.length > 5 ? (0, 5) : (0, sortedData.length);
         // });
@@ -52,7 +52,7 @@ async function createViolinchart(data, containerId) {
             .attr("width", fixedWidth)
             .attr("height", fixedHeight)
             .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            .attr("transform", `translate(${margin.left})`);
 
         // x-axis labels   
         svg.append("g")
@@ -60,8 +60,10 @@ async function createViolinchart(data, containerId) {
             .call(d3.axisBottom(xScale))
             .selectAll("text")
             .attr("class", "axis-label")
+            // .attr("transform", `translate(${margin.left/2},0)`)
             // .attr("transform", "rotate(-30)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "middle");
+            
 
         svg.append("g").call(d3.axisLeft(yScale));
 
@@ -90,8 +92,8 @@ async function createViolinchart(data, containerId) {
 
             // Area generator for violin plot, symmetric on both sides of the x-axis
             const area = d3.area()
-                .x0(d => xScale(cl) - d[1] * violinWidth / 2)  // Left side of violin
-                .x1(d => xScale(cl) + d[1] * violinWidth / 2)  // Right side of violin
+                .x0(d => xScale(cl) + violinWidth /2 - d[1] * violinWidth / 2)  // Left side of violin
+                .x1(d => xScale(cl) + violinWidth  /2 + d[1] * violinWidth / 2)  // Right side of violin
                 .y(d => yScale(d[0]))  // Emissions (y-axis)
                 .curve(d3.curveBasis);  // Smooth curve
 
@@ -101,8 +103,36 @@ async function createViolinchart(data, containerId) {
                 .attr("d", area)
                 .style("fill", colorPalette[cl])  // Apply color scale based on vehicle class
                 .style("stroke", "black");
+
+            // Title
+            svg
+                .append("text")
+                .attr("x", fixedWidth / 2)
+                .attr("y", margin.top / 2)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("font-weight", "bold")
+                .text("Distribution of CO2 Emissions per Vehicle Class");
+            
+            // Y-Axis
+            svg
+                .append("text")
+                .attr("x", -fixedHeight/2)
+                .attr("y",-margin.left/1.5)
+                .attr("text-anchor", "middle")
+                .attr("transform", `rotate(-90)`)
+                .text("CO2 Emissions (g/km)");
+            // X-Axis
+            svg
+                .append("text")
+                .attr("x", fixedWidth / 2)
+                .attr("y", fixedHeight - margin.bottom / 3)
+                .attr("text-anchor", "middle")
+                .text("Vehicle Class");
+
         });
     });
+    
 }
 
 async function updateViolinChart(filteredData) {
@@ -162,7 +192,7 @@ async function updateViolinChart(filteredData) {
             .attr("width", fixedWidth)
             .attr("height", fixedHeight)
             .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            .attr("transform", `translate(${margin.left})`);
 
         // x-axis labels   
         svg.append("g")
@@ -171,9 +201,11 @@ async function updateViolinChart(filteredData) {
             .selectAll("text")
             .attr("class", "axis-label")
             // .attr("transform", "rotate(-30)")
-            .style("text-anchor", "end");
+            .style("text-anchor", "middle");
 
-        svg.append("g").call(d3.axisLeft(yScale));
+        svg
+            .append("g")
+            .call(d3.axisLeft(yScale));
 
         // Kernel density estimation
         const kde = (kernel, xValues, data) => {
@@ -202,8 +234,8 @@ async function updateViolinChart(filteredData) {
 
             // Area generator for violin plot, symmetric on both sides of the x-axis
             const area = d3.area()
-                .x0(d => xScale(cl) - d[1] * violinWidth / 2)  // Left side of violin
-                .x1(d => xScale(cl) + d[1] * violinWidth / 2)  // Right side of violin
+                .x0(d => xScale(cl) + violinWidth /2 - d[1] * violinWidth / 2)  // Left side of violin
+                .x1(d => xScale(cl) + violinWidth /2 + d[1] * violinWidth / 2)  // Right side of violin
                 .y(d => yScale(d[0]))  // Emissions (y-axis)
                 .curve(d3.curveBasis)  // Smooth curve
 
@@ -218,6 +250,32 @@ async function updateViolinChart(filteredData) {
                 .attr("class", "violin")
                 .attr("d", area)
                 .style("stroke", "black");
+            
+                 // Title
+                 svg
+                 .append("text")
+                 .attr("x", fixedWidth / 2)
+                 .attr("y", margin.top / 2)
+                 .attr("text-anchor", "middle")
+                 .style("font-size", "16px")
+                 .style("font-weight", "bold")
+                 .text("Distribution of CO2 Emissions per Vehicle Class");
+             
+             // Y-Axis
+             svg
+                 .append("text")
+                 .attr("x", -fixedHeight/2)
+                 .attr("y",-margin.left/1.5)
+                 .attr("text-anchor", "middle")
+                 .attr("transform", `rotate(-90)`)
+                 .text("CO2 Emissions (g/km)");
+             // X-Axis
+             svg
+                 .append("text")
+                 .attr("x", fixedWidth / 2)
+                 .attr("y", fixedHeight - margin.bottom / 3)
+                 .attr("text-anchor", "middle")
+                 .text("Vehicle Class");
         });
     });
 }   

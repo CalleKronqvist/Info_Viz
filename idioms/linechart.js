@@ -72,7 +72,7 @@ function createLineChart(data) {
         .attr("stroke-width", 1.5)
         .attr("d", emissionLine);
     svg
-        .selectAll("circle.emissions")
+        .selectAll("circle.dataItemEmissions")
         .data(formattedData)
         .enter()
         .append("circle")
@@ -267,9 +267,7 @@ function updateLineChart(data) {
                 .attr("cx", d => xScale(d.year))
                 .attr("cy", d => yScaleLeft(d.avgEmissions))
                 .style("fill", "steelblue")
-                .style("stroke", "black")
-                .style("stroke-width", 1)
-                .style("opacity", 0.5)
+                .style("opacity", 0)
                 .on("mouseover", function (event, d) {
                     d3.select(this).attr("r", 7);  // Enlarge point on hover
                     tooltip
@@ -320,7 +318,7 @@ function updateLineChart(data) {
                 .attr("cx", d => xScale(d.year))
                 .attr("cy", d => yScaleRight(d.totalCost))  
                 .style("fill", "green")
-                .style("opacity", 0.5)
+                .style("opacity", 0)
                 .on("mouseover", function (event, d) {
                     d3.select(this).attr("r", 7);  // Enlarge point on hover
                     tooltip
