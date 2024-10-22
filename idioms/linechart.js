@@ -144,7 +144,6 @@ function createLineChart(data) {
     svg.append("g")
         .attr("class", "yAxisLeft")
         .attr("transform", `translate(${margin.left},0)`)
-        .attr("class", "axisBlue")
         .call(d3.axisLeft(yScaleLeft));
     svg
         .append("text")
@@ -159,7 +158,7 @@ function createLineChart(data) {
 
     svg.append("g")
         .attr("transform", `translate(${fixedWidth - margin.right},0)`)
-        .attr("class", "axisGreen")
+        .attr("class", "yAxisRight")
         // .style("stroke", "green")		
         .call(d3.axisRight(yScaleRight));
     svg
@@ -212,15 +211,15 @@ function updateLineChart(data) {
 
     /* Scales */
     const xScale = d3.scaleLinear()
-        .domain([2000,2022])
+        .domain([d3.min(formattedData, d => d.year), d3.max(formattedData, d => d.year)]) // Dynamic based on data
         .range([margin.left, fixedWidth - margin.right]);
 
     const yScaleLeft = d3.scaleLinear()
-        .domain([0, d3.max(formattedData, d => d.avgEmissions)])
+        .domain([0, d3.max(formattedData, d => d.avgEmissions)]) // Dynamic based on emissions data
         .range([height - margin.bottom, margin.top]);
 
     const yScaleRight = d3.scaleLinear()
-        .domain([0, d3.max(formattedData, d => d.totalCost)])
+        .domain([0, d3.max(formattedData, d => d.totalCost)]) // Dynamic based on cost data
         .range([height - margin.bottom, margin.top]);
 
     const svg = d3.select(".LineChart svg");
@@ -345,6 +344,27 @@ function updateLineChart(data) {
             allCircle.transition().duration(1000).style("opacity", 1);
             });
 
+    /* Axes */
+    // Add X axis
+    svg.select("g.xAxis")
+        .transition()
+        .duration(1000)
+        .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));  // Format years as integers
+
+    // Update Left Y axis (Emissions)
+    svg.select("g.yAxisLeft")
+        .transition()
+        .duration(1000)
+        .attr("class", "yAxisLeft")
+        .call(d3.axisLeft(yScaleLeft));
+
+    // Update Right Y axis (Cost)
+    svg.select("g.yAxisRight")
+        .transition()
+        .duration(1000)
+        .attr("class","yAxisRight")
+        .call(d3.axisRight(yScaleRight));
+    
     // svg.select(".lineEmissions")
     //     .datum(formattedData)
     //     .transition()

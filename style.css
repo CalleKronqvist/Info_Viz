@@ -116,34 +116,34 @@ button {
  *  Define the styles for the legend                *
  ****************************************************/
 
-.axisGreen line {
+.yAxisRight line {
     stroke: green;
     /* Changes tick lines to green */
 }
 
-.axisGreen path {
+.yAxisRight path {
     stroke: green;
     /* Changes the axis path to green */
 }
 
-.axisGreen text {
+.yAxisRight text {
     fill: green;
     /* Changes the tick labels to green */
     stroke: none;
     /* Ensure text doesn’t get outlined */
 }
 
-.axisBlue line {
+.yAxisLeft line {
     stroke: steelblue;
     /* Changes tick lines to green */
 }
 
-.axisBlue path {
+.yAxisLeft path {
     stroke: steelblue;
     /* Changes the axis path to green */
 }
 
-.axisBlue text {
+.yAxisLeft text {
     fill: steelblue;
     /* Changes the tick labels to green */
     stroke: none;
