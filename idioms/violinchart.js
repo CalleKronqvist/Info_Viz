@@ -124,9 +124,9 @@ async function createViolinchart(data, containerId) {
                 tooltip.html(`
                     <b>Vehicle Class:</b> ${cl}<br>
                     <b>CO2 Emissions:</b><br>
-                    Max: ${d3.max(emissions)} g/km<br>
-                    Min: ${d3.min(emissions)} g/km<br>
-                    Median: ${d3.median(emissions)} g/km<br>
+                    Max: ${d3.max(emissions).toFixed(2)} g/km<br>
+                    Min: ${d3.min(emissions).toFixed(2)} g/km<br>
+                    Median: ${d3.median(emissions).toFixed(2)} g/km<br>
                     Mean: ${d3.mean(emissions).toFixed(2)} g/km<br>
                     `)
                     .style("left", (event.pageX + 20) + "px")

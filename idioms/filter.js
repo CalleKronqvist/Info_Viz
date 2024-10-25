@@ -18,13 +18,14 @@ function createFilters(data) {
         'E': 'Ethanol (E85)',
         'N': 'Natural Gas'
     };
-    // Create dropdown for vehicle class
+    // Create dropdown for fuel type
     const fuelDropdown = filterContainer.append('select')
         .attr('class', 'dropdown')
         .attr('id', 'fuelDropdown')
         .on('change', function () {
             filterData(data);
         });
+
 
     fuelDropdown.selectAll('option')
         .data(['All', ...new Set(data.map(d => d['FUEL']))])
@@ -33,34 +34,59 @@ function createFilters(data) {
         .attr('value', d => d) 
         .text(d => d === 'All' ? 'All' : (fuelTypeMap[d] || d));  // Display mapped name or original if not found
 
-
+    // Create a placeholder option that is selected by default
+    fuelDropdown.insert('option', ':first-child')
+    .attr('value', 'All')
+    .attr('disabled', true)
+    .attr('selected', true)
+    .text('Select Fuel Type');
+    
     // Create dropdown for brand
     const brandDropdown = filterContainer.append('select')
-        .attr('class', 'dropdown')
-        .attr('id', 'brandDropdown')
-        .on('change', function () {
-            filterData(data);
-        });
+    .attr('class', 'dropdown')
+    .attr('id', 'brandDropdown')
+    .on('change', function () {
+        filterData(data);
+    });
 
-    brandDropdown.selectAll('option')
-        .data(['All', ...new Set(data.map(d => d['MAKE']))])
-        .enter()
-        .append('option')
-        .text(d => d);
+    // Add a placeholder option for brand
+    brandDropdown.append('option')
+    .attr('value', 'All')
+    .attr('disabled', true)  // Make it unselectable
+    .attr('selected', true)   // Make it selected by default
+    .text('Select Brand');     // Placeholder text
 
-    // Create dropdown for model
+    // Populate options for brand dropdown, including "All" option
+    brandDropdown.selectAll('option.brand-option')
+    .data(['All', ...new Set(data.map(d => d['MAKE']))])
+    .enter()
+    .append('option')
+    .attr('class', 'brand-option')
+    .attr('value', d => d)
+    .text(d => d);
+
+    // Create dropdown for engine size
     const engineSizeDropdown = filterContainer.append('select')
-        .attr('class', 'dropdown')
-        .attr('id', 'engineSizeDropdown')
-        .on('change', function () {
-            filterData(data);
-        });
+    .attr('class', 'dropdown')
+    .attr('id', 'engineSizeDropdown')
+    .on('change', function () {
+        filterData(data);
+    });
+    
+    // Add a placeholder option for engine size
+    engineSizeDropdown.append('option')
+    .attr('value', 'All')
+    .attr('disabled', true)  // Make it unselectable
+    .attr('selected', true)   // Make it selected by default
+    .text('Select Engine Size');     // Placeholder text
 
-    engineSizeDropdown.selectAll('option')
-        .data(['All', ...new Set(data.map(d => d['ENGINE SIZE']))])
-        .enter()
-        .append('option')
-        .text(d => d);
+    engineSizeDropdown.selectAll('option.size-option')
+    .data(['All', ...new Set(data.map(d => d['ENGINE SIZE']))])
+    .enter()
+    .append('option')
+    .attr('class', 'size-option')
+    .attr('value', d => d)
+    .text(d => d);
 }
 
 function createSlider(data) {
