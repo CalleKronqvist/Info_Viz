@@ -10,6 +10,14 @@ function createFilters(data) {
         .append('div')
         .attr('class', 'filter-container');
 
+    // Define a mapping for fuel types based on dataset codes
+    const fuelTypeMap = {
+        'X': 'Regular Gasoline',
+        'Z': 'Premium Gasoline',
+        'D': 'Diesel',
+        'E': 'Ethanol (E85)',
+        'N': 'Natural Gas'
+    };
     // Create dropdown for vehicle class
     const fuelDropdown = filterContainer.append('select')
         .attr('class', 'dropdown')
@@ -22,7 +30,9 @@ function createFilters(data) {
         .data(['All', ...new Set(data.map(d => d['FUEL']))])
         .enter()
         .append('option')
-        .text(d => d);
+        .attr('value', d => d) 
+        .text(d => d === 'All' ? 'All' : (fuelTypeMap[d] || d));  // Display mapped name or original if not found
+
 
     // Create dropdown for brand
     const brandDropdown = filterContainer.append('select')
