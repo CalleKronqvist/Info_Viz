@@ -116,7 +116,7 @@ function createSlider(data) {
     // Create the slider
     const slider = svg.append('g')
         .attr('class', 'slider')
-        .attr('transform', 'translate(50,50)');
+        .attr('transform', `translate(${fixedWidth/3},50)`);
 
     slider.append('line')
         .attr('class', 'track')
@@ -237,7 +237,7 @@ function createEngineSizeSlider(data) {
     // Create the slider
     const slider = svg.append('g')
         .attr('class', 'slider')
-        .attr('transform', 'translate(50,50)');
+        .attr('transform', `translate(${fixedWidth/3},50)`);
 
     slider.append('line')
         .attr('class', 'track')
