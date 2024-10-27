@@ -41,7 +41,7 @@ async function createViolinchart(data, containerId) {
         //     return sortedData.length > 5 ? (0, 5) : (0, sortedData.length);
         // });
 
-        console.log(classes);
+        // console.log(classes);
 
         // Create X axis
         const xScale = d3
@@ -124,10 +124,10 @@ async function createViolinchart(data, containerId) {
                 tooltip.html(`
                     <b>Vehicle Class:</b> ${cl}<br>
                     <b>CO2 Emissions:</b><br>
-                    Max: ${d3.max(emissions).toFixed(2)} g/km<br>
-                    Min: ${d3.min(emissions).toFixed(2)} g/km<br>
-                    Median: ${d3.median(emissions).toFixed(2)} g/km<br>
-                    Mean: ${d3.mean(emissions).toFixed(2)} g/km<br>
+                    Max: ${d3.max(emissions).toFixed(1)} g/km<br>
+                    Min: ${d3.min(emissions).toFixed(1)} g/km<br>
+                    Median: ${d3.median(emissions).toFixed(1)} g/km<br>
+                    Mean: ${d3.mean(emissions).toFixed(1)} g/km<br>
                     `)
                     .style("left", (event.pageX + 20) + "px")
                     .style("top", (event.pageY - 30) + "px");
@@ -202,7 +202,7 @@ async function updateViolinChart(filteredData) {
                 brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
             }));
 
-        console.log(sortedData);
+        // console.log(sortedData);
 
 
         const classes = Array
@@ -212,7 +212,7 @@ async function updateViolinChart(filteredData) {
         //     return sortedData.length > 5 ? (0, 5) : (0, sortedData.length);
         // });
 
-        console.log(classes);
+        // console.log(classes);
 
         d3.selectAll(".ViolinChart > svg").remove();
 
@@ -268,7 +268,7 @@ async function updateViolinChart(filteredData) {
 
         // For each vehicle class, compute the density
         classes.forEach(cl => {
-            console.log(cl);
+            // console.log(cl);
 
             const emissions = sortedData.filter(d => d.vehicleClass === cl).map(d => d.emissions);
             const density = kde(kernelEpanechnikov(bandwidth), xDensity, emissions);
@@ -300,10 +300,10 @@ async function updateViolinChart(filteredData) {
                 tooltip.html(`
                     <b>Vehicle Class:</b> ${cl}<br>
                     <b>CO2 Emissions:</b><br>
-                    Max: ${d3.max(emissions).toFixed(2)} g/km<br>
-                    Min: ${d3.min(emissions).toFixed(2)} g/km<br>
-                    Median: ${d3.median(emissions).toFixed(2)} g/km<br>
-                    Mean: ${d3.mean(emissions).toFixed(2)} g/km<br>
+                    Max: ${d3.max(emissions).toFixed(1)} g/km<br>
+                    Min: ${d3.min(emissions).toFixed(1)} g/km<br>
+                    Median: ${d3.median(emissions).toFixed(1)} g/km<br>
+                    Mean: ${d3.mean(emissions).toFixed(1)} g/km<br>
                     `)
                     .style("left", (event.pageX + 20) + "px")
                     .style("top", (event.pageY - 30) + "px");

@@ -24,7 +24,7 @@ function createFilters(data) {
         .attr('class', 'dropdown')
         .attr('id', 'fuelDropdown')
         .on('change', function () {
-            filterData(data);
+            filterData(data); // from legend.js
         });
 
 
@@ -47,7 +47,7 @@ function createFilters(data) {
     .attr('class', 'dropdown')
     .attr('id', 'brandDropdown')
     .on('change', function () {
-        filterData(data);
+        filterData(data); // from legend.js
     });
 
     // Add a placeholder option for brand
@@ -66,29 +66,7 @@ function createFilters(data) {
     .attr('value', d => d)
     .text(d => d);
 }
-//     // Create dropdown for engine size
-//     const engineSizeDropdown = filterContainer.append('select')
-//     .attr('class', 'dropdown')
-//     .attr('id', 'engineSizeDropdown')
-//     .on('change', function () {
-//         filterData(data);
-//     });
-    
-//     // Add a placeholder option for engine size
-//     engineSizeDropdown.append('option')
-//     .attr('value', 'All')
-//     .attr('disabled', true)  // Make it unselectable
-//     .attr('selected', true)   // Make it selected by default
-//     .text('Select Engine Size');     // Placeholder text
-
-//     engineSizeDropdown.selectAll('option.size-option')
-//     .data(['All', ...new Set(data.map(d => d['ENGINE SIZE']))])
-//     .enter()
-//     .append('option')
-//     .attr('class', 'size-option')
-//     .attr('value', d => d)
-//     .text(d => d);
-// }
+ 
 
 function createSlider(data) {
 
@@ -209,34 +187,8 @@ function createSlider(data) {
         d3.select('#startYearLabel').text(Math.round(startYear));
         d3.select('#endYearLabel').text(Math.round(endYear));
 
-        const selectedFuel = d3.select('#fuelDropdown').property('value');
-        const selectedBrand = d3.select('#brandDropdown').property('value');
-        
-        // Get year and engine size ranges from slider labels
-        // const startYear = +d3.select('#startYearLabel').text();
-        // const endYear = +d3.select('#endYearLabel').text();
-   
+        filterData(data); // from legend.js
 
-        // console.log(`Filtering with: Fuel - ${selectedFuel}, Brand - ${selectedBrand}, Year Range - ${startYear} to ${endYear}, SIZE: ${startSize} to ${endSize}`);
-
-
-        // Filter by year and engine size ranges
-        let filteredData = data.filter(d => 
-            d.YEAR >= startYear && d.YEAR <= endYear
-            // d['ENGINE SIZE'] >= startSize && d['ENGINE SIZE'] <= endSize
-        );
-
-        // Filter further by fuel type and brand if not set to "All"
-        if (selectedFuel !== 'All') {
-            filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
-        }
-
-        if (selectedBrand !== 'All') {
-            filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
-        }
-        
-        // Update visualization with filtered data
-        updateVisualizations(filteredData); 
     }
 }
 
@@ -363,70 +315,42 @@ function createEngineSizeSlider(data) {
         d3.select('#startSizeLabel').text(startSize);
         d3.select('#endSizeLabel').text(endSize);
         
-        const selectedFuel = d3.select('#fuelDropdown').property('value');
-        const selectedBrand = d3.select('#brandDropdown').property('value');
-        
-        // Get year and engine size ranges from slider labels
-        const startYear = +d3.select('#startYearLabel').text();
-        const endYear = +d3.select('#endYearLabel').text();
-   
 
-        console.log(`Filtering with: Fuel - ${selectedFuel}, Brand - ${selectedBrand}, Year Range - ${startYear} to ${endYear}, SIZE: ${startSize} to ${endSize}`);
-
-
-        // Filter by year and engine size ranges
-        let filteredData = data.filter(d => 
-            d.YEAR >= startYear && d.YEAR <= endYear &&
-            d['ENGINE SIZE'] >= startSize && d['ENGINE SIZE'] <= endSize
-        );
-
-        // Filter further by fuel type and brand if not set to "All"
-        if (selectedFuel !== 'All') {
-            filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
-        }
-
-        if (selectedBrand !== 'All') {
-            filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
-        }
-        
-        // Update visualization with filtered data
-        updateVisualizations(filteredData); 
-
-        // filterData(data);
+        filterData(data); // From legend.js
     }
 }
 
-function filterData(data) {
+// function filterData(data) {
 
-    console.log('went into filter')
-    // Get the selected fuel type and brand
-    const selectedFuel = d3.select('#fuelDropdown').property('value');
-    const selectedBrand = d3.select('#brandDropdown').property('value');
+//     console.log('went into filter')
+//     // Get the selected fuel type and brand
+//     const selectedFuel = d3.select('#fuelDropdown').property('value');
+//     const selectedBrand = d3.select('#brandDropdown').property('value');
     
-    // Get year and engine size ranges from slider labels
-    const startYear = +d3.select('#startYearLabel').text();
-    const endYear = +d3.select('#endYearLabel').text();
-    const startSize = +d3.select('#startSizeLabel').text();
-    const endSize = +d3.select('#endSizeLabel').text();
+//     // Get year and engine size ranges from slider labels
+//     const startYear = +d3.select('#startYearLabel').text();
+//     const endYear = +d3.select('#endYearLabel').text();
+//     const startSize = +d3.select('#startSizeLabel').text();
+//     const endSize = +d3.select('#endSizeLabel').text();
 
-    console.log(`Filtering with: Fuel - ${selectedFuel}, Brand - ${selectedBrand}, Year Range - ${startYear} to ${endYear}`);
+//     console.log(`Filtering with: Fuel - ${selectedFuel}, Brand - ${selectedBrand}, Year Range - ${startYear} to ${endYear}`);
 
 
-    // Filter by year and engine size ranges
-    let filteredData = data.filter(d => 
-        d.YEAR >= startYear && d.YEAR <= endYear &&
-        d['ENGINE SIZE'] >= startSize && d['ENGINE SIZE'] <= endSize
-    );
+//     // Filter by year and engine size ranges
+//     let filteredData = data.filter(d => 
+//         d.YEAR >= startYear && d.YEAR <= endYear &&
+//         d['ENGINE SIZE'] >= startSize && d['ENGINE SIZE'] <= endSize
+//     );
 
-    // Filter further by fuel type and brand if not set to "All"
-    if (selectedFuel !== 'All') {
-        filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
-    }
+//     // Filter further by fuel type and brand if not set to "All"
+//     if (selectedFuel !== 'All') {
+//         filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
+//     }
 
-    if (selectedBrand !== 'All') {
-        filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
-    }
+//     if (selectedBrand !== 'All') {
+//         filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
+//     }
     
-    // Update visualization with filtered data
-    updateVisualizations(filteredData); 
-}
+//     // Update visualization with filtered data
+//     updateVisualizations(filteredData); 
+// }

@@ -112,15 +112,20 @@ async function createLegend(data, containerId = ".Legend") {
 }
 
 function filterData(data) {
-
     // get the other filters/sliders
     const selectedFuel = d3.select('#fuelDropdown').property('value');
     const selectedBrand = d3.select('#brandDropdown').property('value');
-    const selectedEngineSize = d3.select('#engineSizeDropdown').property('value');
+    // const selectedEngineSize = d3.select('#engineSizeDropdown').property('value');
     const startYear = +d3.select('#startYearLabel').text();
     const endYear = +d3.select('#endYearLabel').text();
+    
+    const startSize = +d3.select('#startSizeLabel').text();
+    const endSize = +d3.select('#endSizeLabel').text();
 
-    let filteredData = data.filter(d => d.YEAR >= startYear && d.YEAR <= endYear);
+    let filteredData = data.filter(d => 
+        d.YEAR >= startYear && d.YEAR <= endYear &&
+        d['ENGINE SIZE'] >= startSize && d['ENGINE SIZE'] <= endSize
+    );
 
     if (selectedFuel !== 'All') {
         filteredData = filteredData.filter(d => d['FUEL'] === selectedFuel);
@@ -130,9 +135,9 @@ function filterData(data) {
         filteredData = filteredData.filter(d => d['MAKE'] === selectedBrand);
     }
 
-    if (selectedEngineSize !== 'All') {
-        filteredData = filteredData.filter(d => d['ENGINE SIZE'] === selectedEngineSize);
-    }
+    // if (selectedEngineSize !== 'All') {
+    //     filteredData = filteredData.filter(d => d['ENGINE SIZE'] === selectedEngineSize);
+    // }
 
     if (selectedClasses.size > 0) {
         filteredData = filteredData.filter(d => selectedClasses.has(d['VEHICLE CLASS']));
