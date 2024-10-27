@@ -179,7 +179,7 @@ function createLineChart(data) {
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
         .style("font-weight", "bold")
-        .text("CO2 Emissions and Cost for Gasoline Vehicles");
+        .text("CO2 Emissions and Cost over time");
 
 
 }
