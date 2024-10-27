@@ -1,6 +1,6 @@
 function createLineChart(data) {
     /* Pre-process*/
-    let filteredData = data.filter(d => d['FUEL'] === 'X');
+    let filteredData = data;
 
     let groupedData = d3.group(filteredData, d => d.YEAR);
 
@@ -117,7 +117,7 @@ function createLineChart(data) {
             d3.select(this).attr("r", 7);  // Enlarge point on hover
             tooltip
                 .style("opacity", 1)
-                .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$`)
+                .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$/100km`)
                 .style("left", `${event.pageX + 10}px`)
                 .style("top", `${event.pageY - 25}px`);
         })
@@ -186,9 +186,9 @@ function createLineChart(data) {
 function updateLineChart(data) {
     /* Pre-process*/
 
-    console.log(data);
+    // console.log(data);
 
-    let filteredData = data.filter(d => d['FUEL'] === 'X');
+    let filteredData = data;
 
     let groupedData = d3.group(filteredData, d => d.YEAR);
 
@@ -333,7 +333,7 @@ function updateLineChart(data) {
                     d3.select(this).attr("r", 7);  // Enlarge point on hover
                     tooltip
                         .style("opacity", 1)
-                        .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$`)
+                        .html(`Year: ${d.year}<br>Cost: ${d.totalCost.toFixed(2)}$/100km`)
                         .style("left", `${event.pageX + 10}px`)
                         .style("top", `${event.pageY - 25}px`);
                         })

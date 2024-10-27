@@ -27,7 +27,8 @@ async function createBarchart(data, containerId) {
           model: model,
           emissions: d3.mean(values, d => d['EMISSIONS']),
           vehicleClass: values[0]['VEHICLE CLASS'], // Assuming the vehicle class is the same for all instances of a model
-          brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
+          brand: values[0]['MAKE'], // Assuming the brand is the same for all instances of a model
+          engineSize: values[0]['ENGINE SIZE']
       }))
       .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
       .slice(0, 10); // changed this to 10 for now for better display
@@ -70,7 +71,15 @@ async function createBarchart(data, containerId) {
         tooltip.transition()
           .duration(200)
           .style("opacity", .9);
-        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}<br/>Brand: ${d.brand}<br/>Vehicle Class: ${d.vehicleClass}`)
+          tooltip.transition()
+          .duration(200)
+          .style("opacity", .9);
+        tooltip.html(`<b>Model</b>: ${d.model}<br/>
+          <b>Emissions:</b> ${d.emissions.toFixed(1)} g/km<br/>
+          <b>Brand:</b> ${d.brand}<br/>
+          <b>Vehicle Class:</b> ${d.vehicleClass}<br/>
+          <b>Engine Size:</b> ${d.engineSize} Litres
+          `)
           .style("left", (event.pageX) + "px")
           .style("top", (event.pageY - 28) + "px");
       })
@@ -158,7 +167,8 @@ async function updateBarchart(data) {
           model: model,
           emissions: d3.mean(values, d => d['EMISSIONS']),
           vehicleClass: values[0]['VEHICLE CLASS'], // Assuming the vehicle class is the same for all instances of a model
-          brand: values[0]['MAKE'] // Assuming the brand is the same for all instances of a model
+          brand: values[0]['MAKE'], // Assuming the brand is the same for all instances of a model
+          engineSize: values[0]['ENGINE SIZE']
       }))
       .sort((a, b) => b.emissions - a.emissions) // Sort by highest emissions
       .slice(0, 10); // changed this to 10 for now for better display
@@ -209,7 +219,12 @@ async function updateBarchart(data) {
         tooltip.transition()
           .duration(200)
           .style("opacity", .9);
-        tooltip.html(`Model: ${d.model}<br/>Emissions: ${d.emissions}<br/>Brand: ${d.brand}<br/>Vehicle Class: ${d.vehicleClass}`)
+        tooltip.html(`<b>Model</b>: ${d.model}<br/>
+          <b>Emissions:</b> ${d.emissions.toFixed(1)} g/km<br/>
+          <b>Brand:</b> ${d.brand}<br/>
+          <b>Vehicle Class:</b> ${d.vehicleClass}<br/>
+          <b>Engine Size:</b> ${d.engineSize} Litres
+          `)
           .style("left", (event.pageX) + "px")
           .style("top", (event.pageY - 28) + "px");
       })
